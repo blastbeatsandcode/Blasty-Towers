@@ -33,6 +33,12 @@ public class Pathfinder : MonoBehaviour {
     // Gets the path
     public List<Tile> GetPath()
     {
+        if (path.Count == 0) CalculatePath();
+        return path;
+    }
+
+    private void CalculatePath()
+    {
         LoadTiles();
         ColorStartAndEnd();
         BreadthFirstSearch();
@@ -40,8 +46,8 @@ public class Pathfinder : MonoBehaviour {
 
         // Because the path is currently in reverse order from the breadcrumbs
         // We want to reverse it to return the proper path
+        path.Add(startPoint);
         path.Reverse();
-        return path;
     }
 
 
@@ -63,7 +69,6 @@ public class Pathfinder : MonoBehaviour {
         while (queue.Count > 0 && isRunning)
         {
             searchCenter = queue.Dequeue();
-            print("Searching from: " + searchCenter);
 
             // Mark this tile as explored so we don't calculate on it again
             searchCenter.isExplored = true;
@@ -81,7 +86,6 @@ public class Pathfinder : MonoBehaviour {
         // If the start and endpoint are the same, do nothing
         if (searchCenter == endPoint)
         {
-            print("STOPPED");
             isRunning = false;
         }
     }

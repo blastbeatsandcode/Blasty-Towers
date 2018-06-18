@@ -1,8 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour {
+
+    [SerializeField][Tooltip("Sets enemy health. Defaults to 100.")] int health = 100;
+
+    EnemyState state;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -10,12 +16,24 @@ public class EnemyController : MonoBehaviour {
         Pathfinder pathfinder = FindObjectOfType<Pathfinder>();
         List<Tile> path = pathfinder.GetPath();
         StartCoroutine(FollowPath(path));
+
+        // The enemy starts out alive
+        state = EnemyState.ALIVE;
     }
 
     // Update is called once per frame
     void Update () {
-		
+        // If enemy is dead, handle dying
+		if (state == EnemyState.DEAD)
+        {
+            HandleDying();
+        }
 	}
+
+    private void HandleDying()
+    {
+        Destroy(gameObject);
+    }
 
     // Coroutine to show path
     // Print and then wait one second to continue
@@ -27,4 +45,22 @@ public class EnemyController : MonoBehaviour {
             yield return new WaitForSeconds(1);
         }
     }
+
+    private void OnParticleCollision(GameObject other)
+    {
+        TakeDamage();
+    }
+
+    private void TakeDamage()
+    {
+        health -= 5; // Take 5 damage
+
+        if (health <= 0)
+        {
+            state = EnemyState.DEAD;
+        }
+    }
 }
+
+// State of the enemy
+enum EnemyState { ALIVE, DEAD, ATTACKING }
