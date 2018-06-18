@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Pathfinder : MonoBehaviour {
-
-    // Dictionary to store our locations and the tiles associated with it
-    Dictionary<Vector2Int, Tile> worldGrid = new Dictionary<Vector2Int, Tile>();
-
     // Set Start and endpoints in inspector
     [Tooltip("Set start and end points for path")]
     [SerializeField] Tile startPoint, endPoint;
 
+    // Dictionary to store our locations and the tiles associated with it
+    Dictionary<Vector2Int, Tile> worldGrid = new Dictionary<Vector2Int, Tile>();
+
+    // Stores current search center.
+    // Used for breadcrumbs and for current center of search
+    Tile searchCenter;
+
     // Queue up our path
     Queue<Tile> queue = new Queue<Tile>();
-    bool isRunning;
+    bool isRunning = true;
 
     // Define directions
     Vector2Int[] directions = {
@@ -24,25 +27,52 @@ public class Pathfinder : MonoBehaviour {
         Vector2Int.right
     };
 
-	// Use this for initialization
-	void Start ()
+    // Path to follow
+    List<Tile> path = new List<Tile>();
+
+    // Gets the path
+    public List<Tile> GetPath()
     {
         LoadTiles();
         ColorStartAndEnd();
-        Pathfind();
-        //ExploreNeighbors();
+        BreadthFirstSearch();
+        GeneratePath(endPoint);
+
+        // Because the path is currently in reverse order from the breadcrumbs
+        // We want to reverse it to return the proper path
+        path.Reverse();
+        return path;
     }
 
-    private void Pathfind()
+
+    // TODO: Is recursion a problem?
+    private void GeneratePath(Tile endpoint)
+    {
+        // If we have reached the end of the breadcrumbs, return
+        if (endpoint.exploredFrom == null) return;
+
+        //otherwise, add the tile explored from
+        path.Add(endpoint);
+        GeneratePath(endpoint.exploredFrom);
+    }
+
+    private void BreadthFirstSearch()
     {
         queue.Enqueue(startPoint);
 
-        while (queue.Count > 0)
+        while (queue.Count > 0 && isRunning)
         {
-            Tile searchCenter = queue.Dequeue();
+            searchCenter = queue.Dequeue();
             print("Searching from: " + searchCenter);
 
+            // Mark this tile as explored so we don't calculate on it again
+            searchCenter.isExplored = true;
+
+            // Halt if we reached the end of the path
             HaltIfEndFound(searchCenter);
+
+            // Look for the next tile to move to
+            ExploreNeighbors();
         }
     }
 
@@ -58,18 +88,28 @@ public class Pathfinder : MonoBehaviour {
 
     private void ExploreNeighbors()
     {
+        if (!isRunning) return; // We don't want to explore neighboring tiles if we are not moving
         foreach (Vector2Int direction in directions)
         {
-            Vector2Int explorationCoords = startPoint.GetGridPos() + direction;
-            try
-            {
-                worldGrid[explorationCoords].SetTopColor(Color.blue);
-            }
-            catch
-            {
+            Vector2Int explorationCoords = searchCenter.GetGridPos() + direction;
 
-            }
+            // If the grid contains the exploration coordinates, queue the new neighbor
+            if (worldGrid.ContainsKey(explorationCoords)) QueueNewNeighbors(explorationCoords);
         }
+    }
+
+    // Add new neighbors to queue
+    private void QueueNewNeighbors(Vector2Int explorationCoords)
+    {
+        // Get the coordinate of neighbor and set the top color
+        Tile neighbor = worldGrid[explorationCoords];
+
+        // If we have already explored the neighbor or if it is already queued, return
+        if (neighbor.isExplored || queue.Contains(neighbor)) return;
+
+        // Add this neighbor into the queue
+        queue.Enqueue(neighbor);
+        neighbor.exploredFrom = searchCenter; // Sets the breadcrumb
     }
 
     private void ColorStartAndEnd()

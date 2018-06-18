@@ -5,7 +5,7 @@ using UnityEngine;
 [ExecuteInEditMode]
 [SelectionBase]
 [RequireComponent(typeof(Tile))]
-public class CubeEditor : MonoBehaviour {
+public class TileEditor : MonoBehaviour {
 
     //[Tooltip("Set the size of each object to tile; this is how much the object must be moved each time for snapping effect.")][SerializeField] [Range(1f, 20f)] float gridSize = 10f;
     Tile tile;
