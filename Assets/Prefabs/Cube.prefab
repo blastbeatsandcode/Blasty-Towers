@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 4573336789483760}
   - component: {fileID: 114574633838872120}
   - component: {fileID: 114384216005699646}
+  - component: {fileID: 65413957485370206}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -87,7 +88,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1777142289886272}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 40, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4724704468063392}
@@ -176,7 +177,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1021931636464954}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -268,6 +269,18 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &65413957485370206
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1777142289886272}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 9, y: 10, z: 9}
+  m_Center: {x: 0, y: -5, z: 0}
 --- !u!102 &102041747679934282
 TextMesh:
   serializedVersion: 3
@@ -275,7 +288,7 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1021931636464954}
-  m_Text: 4,0
+  m_Text: 0,0
   m_OffsetZ: 0
   m_CharacterSize: 2
   m_LineSpacing: 1
@@ -300,10 +313,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725ff13fafd5138469c9e7fa43f7c442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlaceable: 1
   exploredFrom: {fileID: 0}
   isExplored: 0
-  colorize: 0
-  color: {r: 0, g: 0, b: 1, a: 1}
+  tower: {fileID: 1076655586912852, guid: e4d75019a3a13c14a8437e81adffc3aa, type: 2}
+  towerCantPlace: {fileID: 1119386363046322, guid: 52cd739b353934c448c611b8441cde11,
+    type: 2}
+  towerPlace: {fileID: 1727544626843340, guid: 77a3042d44142f14d88306945a4b21e8, type: 2}
 --- !u!114 &114574633838872120
 MonoBehaviour:
   m_ObjectHideFlags: 1

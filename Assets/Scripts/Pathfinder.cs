@@ -40,13 +40,13 @@ public class Pathfinder : MonoBehaviour {
     private void CalculatePath()
     {
         LoadTiles();
-        ColorStartAndEnd();
         BreadthFirstSearch();
         GeneratePath(endPoint);
 
         // Because the path is currently in reverse order from the breadcrumbs
         // We want to reverse it to return the proper path
         path.Add(startPoint);
+        startPoint.isPlaceable = false;
         path.Reverse();
     }
 
@@ -57,8 +57,9 @@ public class Pathfinder : MonoBehaviour {
         // If we have reached the end of the breadcrumbs, return
         if (endpoint.exploredFrom == null) return;
 
-        //otherwise, add the tile explored from
+        //otherwise, add the tile explored from. Because it is part of the path, make not placeable
         path.Add(endpoint);
+        endpoint.isPlaceable = false;
         GeneratePath(endpoint.exploredFrom);
     }
 
@@ -116,11 +117,11 @@ public class Pathfinder : MonoBehaviour {
         neighbor.exploredFrom = searchCenter; // Sets the breadcrumb
     }
 
-    private void ColorStartAndEnd()
-    {
-        startPoint.SetTopColor(Color.cyan);
-        endPoint.SetTopColor(Color.red);
-    }
+    //private void ColorStartAndEnd()
+    //{
+    //    startPoint.SetTopColor(Color.cyan);
+    //    endPoint.SetTopColor(Color.red);
+    //}
 
     // Load all of the tiles in the map into an array
     private void LoadTiles()
