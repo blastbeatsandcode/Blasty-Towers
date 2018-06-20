@@ -46,9 +46,14 @@ public class EnemyController : MonoBehaviour {
     {
         foreach (Tile tile in path)
         {
-            transform.position = tile.transform.position;
-            yield return new WaitForSeconds(1);
+            yield return StartCoroutine(SmoothTransition(transform, tile.transform));
         }
+    }
+
+    IEnumerator SmoothTransition(Transform transform, Transform newTransform)
+    {
+        transform.position = Vector3.Lerp(transform.position, newTransform.position, 1f);
+        yield return new WaitForSeconds(1);
     }
 
     private void OnParticleCollision(GameObject other)

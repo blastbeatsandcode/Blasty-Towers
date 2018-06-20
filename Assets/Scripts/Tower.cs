@@ -10,6 +10,9 @@ public class Tower : MonoBehaviour {
 
     Transform targetEnemy;
 
+    // Used outside of class
+    public Tile boundTile;
+
     ParticleSystem particleSystem;
     ParticleSystem.EmissionModule emission;
 

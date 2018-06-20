@@ -17,7 +17,6 @@ public class Tile : MonoBehaviour {
     //[SerializeField] [Tooltip("Colorize explored tiles?")] bool colorize;
     //[SerializeField] [Tooltip("Color to colorize explored tiles. Defaults to blue")] Color color = Color.blue;
     [Header("Placeable Settings")]
-    [SerializeField] [Tooltip("Tower prefab to place in world")] GameObject tower;
     [SerializeField] [Tooltip("Tower prefab to show tower can't be placed here")] GameObject towerCantPlace;
     [SerializeField] [Tooltip("Tower prefab to show tower can be placed here")] GameObject towerPlace;
 
@@ -26,11 +25,7 @@ public class Tile : MonoBehaviour {
 
     void Update()
     {
-        //// If this tile is explored, color it
-        //if (colorize && isExplored)
-        //{
-        //    SetTopColor(color);
-        //}
+        if (isPlaceable) hasTower = false;
     }
 
 
@@ -63,8 +58,7 @@ public class Tile : MonoBehaviour {
         if (isPlaceable && Input.GetKeyDown(KeyCode.Mouse0))
         {
             Destroy(gameObject.GetComponentInChildren<Tower>().gameObject);
-            Instantiate(tower, gameObject.transform.position, Quaternion.identity, gameObject.transform);
-            isPlaceable = false;
+            FindObjectOfType<TowerFactory>().AddTower(this);
             hasTower = true;
         }
     }
