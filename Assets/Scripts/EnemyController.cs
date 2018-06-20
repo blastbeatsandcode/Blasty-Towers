@@ -6,6 +6,9 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour {
 
     [SerializeField][Tooltip("Sets enemy health. Defaults to 100.")] int health = 100;
+    [SerializeField] [Tooltip("Enemy Hit particle effects")] ParticleSystem enemyHitFX;
+    [SerializeField] [Tooltip("Enemy Die particle effects")] ParticleSystem enemyDieFX;
+
 
     EnemyState state;
 
@@ -32,7 +35,9 @@ public class EnemyController : MonoBehaviour {
 
     private void HandleDying()
     {
-        Destroy(gameObject);
+        Instantiate(enemyDieFX, gameObject.transform.position, Quaternion.identity, gameObject.transform);
+        GetComponentInChildren<MeshRenderer>().enabled = false;
+        Destroy(gameObject, 0.25f);
     }
 
     // Coroutine to show path
@@ -54,10 +59,13 @@ public class EnemyController : MonoBehaviour {
     private void TakeDamage()
     {
         health -= 5; // Take 5 damage
-
         if (health <= 0)
         {
             state = EnemyState.DEAD;
+        }
+        else
+        {
+            enemyHitFX.Play();
         }
     }
 }
