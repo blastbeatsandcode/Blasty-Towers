@@ -9,6 +9,11 @@ public class EnemyController : MonoBehaviour {
     [SerializeField][Tooltip("Sets damage enemy deals to the base. Defaults to 10.")] int damage = 10;
     [SerializeField] [Tooltip("Enemy Hit particle effects")] ParticleSystem enemyHitFX;
     [SerializeField] [Tooltip("Enemy Die particle effects")] ParticleSystem enemyDieFX;
+    [SerializeField] [Tooltip("Enemy reached base sound effects.")] AudioClip enemyHitBaseFX;
+    [SerializeField] [Tooltip("Enemy takes damage sound effects.")] AudioClip takeDamageFX;
+    [SerializeField] [Tooltip("Enemy dies sound effects.")] AudioClip enemyDeathSFX;
+
+    bool hasDied = false;
 
 
     EnemyState state;
@@ -28,9 +33,10 @@ public class EnemyController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         // If enemy is dead, handle dying
-		if (state == EnemyState.DEAD)
+		if (state == EnemyState.DEAD && !hasDied)
         {
             HandleDying();
+            hasDied = true;
         }
 	}
 
@@ -39,10 +45,12 @@ public class EnemyController : MonoBehaviour {
         Instantiate(enemyDieFX, gameObject.transform.position, Quaternion.identity, gameObject.transform);
         GetComponentInChildren<MeshRenderer>().enabled = false;
         Destroy(gameObject, 0.25f);
+        AudioSource.PlayClipAtPoint(enemyDeathSFX, Camera.main.transform.position);
     }
 
     private void ExplodeAtEnd()
     {
+        GetComponent<AudioSource>().PlayOneShot(enemyHitBaseFX);
         Instantiate(enemyDieFX, gameObject.transform.position, Quaternion.identity, gameObject.transform);
         GetComponentInChildren<MeshRenderer>().enabled = false;
     }
@@ -83,6 +91,7 @@ public class EnemyController : MonoBehaviour {
         {
             enemyHitFX.Play();
         }
+        GetComponent<AudioSource>().PlayOneShot(takeDamageFX);
     }
 
 

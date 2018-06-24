@@ -19,6 +19,11 @@ public class Base : MonoBehaviour {
             print("YOU DIED");
         }
 
-        Destroy(other.transform.parent.gameObject, 0.75f);
+        Destroy(other.transform.parent.gameObject, 1.5f);
+    }
+
+    public int GetBaseHealth()
+    {
+        return baseHealth;
     }
 }
