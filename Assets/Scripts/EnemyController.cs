@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour {
 
     [SerializeField][Tooltip("Sets enemy health. Defaults to 100.")] int health = 100;
+    [SerializeField][Tooltip("Sets damage enemy deals to the base. Defaults to 10.")] int damage = 10;
     [SerializeField] [Tooltip("Enemy Hit particle effects")] ParticleSystem enemyHitFX;
     [SerializeField] [Tooltip("Enemy Die particle effects")] ParticleSystem enemyDieFX;
 
@@ -40,6 +41,12 @@ public class EnemyController : MonoBehaviour {
         Destroy(gameObject, 0.25f);
     }
 
+    private void ExplodeAtEnd()
+    {
+        Instantiate(enemyDieFX, gameObject.transform.position, Quaternion.identity, gameObject.transform);
+        GetComponentInChildren<MeshRenderer>().enabled = false;
+    }
+
     // Coroutine to show path
     // Print and then wait one second to continue
     IEnumerator FollowPath(List<Tile> path)
@@ -48,12 +55,16 @@ public class EnemyController : MonoBehaviour {
         {
             yield return StartCoroutine(SmoothTransition(transform, tile.transform));
         }
+
+        // Do damage to base
+
+        ExplodeAtEnd();
     }
 
     IEnumerator SmoothTransition(Transform transform, Transform newTransform)
     {
         transform.position = Vector3.Lerp(transform.position, newTransform.position, 1f);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
     }
 
     private void OnParticleCollision(GameObject other)
@@ -72,6 +83,12 @@ public class EnemyController : MonoBehaviour {
         {
             enemyHitFX.Play();
         }
+    }
+
+
+    public int GetDamage()
+    {
+        return this.damage;
     }
 }
 

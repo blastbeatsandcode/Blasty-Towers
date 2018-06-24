@@ -1,5 +1,7 @@
 # Blasty-Towers
-A tower defense game built in Unity
+A tower defense game built in Unity.
+
+Place towers that will shoot some baddies.
 
 
 ### Assets Used
